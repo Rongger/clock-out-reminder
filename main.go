@@ -39,7 +39,7 @@ func main() {
 func isTimeToClockOut() bool {
 	now := time.Now()
 	y, m, d := now.Date()
-	startTime, err1 := time.Parse(timeLayout, fmt.Sprintf("%04d-%02d-%02d 13:00:00 +0800 CST", y, m, d))
+	startTime, err1 := time.Parse(timeLayout, fmt.Sprintf("%04d-%02d-%02d 17:00:00 +0800 CST", y, m, d))
 	endTime, err2 := time.Parse(timeLayout, fmt.Sprintf("%04d-%02d-%02d 23:59:59 +0800 CST", y, m, d))
 
 	if err1 == nil && err2 == nil && (now.After(startTime) && now.Before(endTime)) {
