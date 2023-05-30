@@ -2,8 +2,11 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
+	"os/user"
+	"path/filepath"
 	"time"
 
 	"github.com/chengxuncc/shutdownhook"
@@ -12,18 +15,26 @@ import (
 var timeLayout = "2006-01-02 15:04:05  -0700 MST"
 
 func main() {
-	filePath := "clock-out-reminder.log"
+	currentUser, err := user.Current()
+	if err != nil {
+		fmt.Println("无法获取当前用户信息：", err)
+		return
+	}
+	filePath := filepath.Join(currentUser.HomeDir, "clock-out-reminder.log")
+
 	f, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		fmt.Println("无法打开文件:", err)
+		fmt.Println("无法打开文件：", err)
 		panic(err)
 	}
+	defer f.Close()
+	log.SetOutput(f)
 
-	fmt.Fprintf(f, "%s run\n", time.Now().Format(timeLayout))
+	log.Printf("%s run\n", time.Now().Format(timeLayout))
 	err = shutdownhook.New(func() {
 		ok := isTimeToClockOut()
 		key := os.Getenv("BARK_KEY")
-		fmt.Fprintf(f, "%s shutdown\n", time.Now().Format(timeLayout))
+		log.Printf("%s shutdown\n", time.Now().Format(timeLayout))
 
 		if ok == true {
 			http.Get(fmt.Sprintf("https://api.day.app/%s/通知/您似乎关电脑下班了，记得打卡~", key))
@@ -31,8 +42,7 @@ func main() {
 		f.Close()
 	})
 	if err != nil {
-		fmt.Fprintf(f, "shutdownhook err: %s\n", err)
-		panic(err)
+		log.Fatal("shutdownhook err:", err)
 	}
 }
 
