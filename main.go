@@ -37,7 +37,7 @@ func main() {
 		log.Printf("%s shutdown\n", time.Now().Format(timeLayout))
 
 		if ok == true {
-			http.Get(fmt.Sprintf("https://api.day.app/%s/通知/您似乎关电脑下班了，记得打卡~", key))
+			http.Get(fmt.Sprintf("https://api.day.app/%s/通知/您似乎关电脑下班了，记得打卡~?isArchive=0&level=timeSensitive", key))
 		}
 		f.Close()
 	})
