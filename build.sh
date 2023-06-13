@@ -8,7 +8,7 @@ fi
 
 export GOOS=windows
 export GOARCH=amd64
-go build -ldflags "-H=windowsgui" -o "builds/clock-out-reminder.$version.exe"
+go build -ldflags "-H=windowsgui" -o "build/clock-out-reminder.$version.exe"
 
 export GOARCH=arm64
-go build -ldflags "-H=windowsgui" -o "builds/clock-out-reminder.$version.arm64.exe"
+go build -ldflags "-H=windowsgui" -o "build/clock-out-reminder.$version.arm64.exe"
